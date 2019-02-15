@@ -29,7 +29,7 @@ func trimString(value string) *string {
 func main() {
 	c := colly.NewCollector()
 
-	journal := make([]DiaryEntry, 0)
+	diary := make([]DiaryEntry, 0)
 
 	username := "iMkh"
 	category := "all"
@@ -45,7 +45,7 @@ func main() {
 				if score == "" { // TODO: check "done" state (no score)
 					score = "✓" // e.DOM.Find("span.eins-done")
 				}
-				journal = append(journal, DiaryEntry{
+				diary = append(diary, DiaryEntry{
 					FrenchTitle:      trimString(e.ChildText("[id^=product-title]")),
 					TitleDate:        trimString(e.ChildText("span.elco-date")),
 					OriginalTitle:    trimString(e.ChildText("p.elco-original-title")),
@@ -64,7 +64,7 @@ func main() {
 			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/all/all/page-%d.ajax", username, category, page)
 			r.Request.Visit(nextPageURL)
 		} else {
-			fmt.Println(len(journal))
+			fmt.Println(len(diary))
 		}
 	})
 
