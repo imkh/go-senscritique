@@ -5,7 +5,6 @@ import (
 	"regexp"
 
 	"github.com/gocolly/colly"
-	"github.com/hokaccha/go-prettyjson"
 )
 
 // DiaryEntry represent an entry in a SensCritique user's diary.
@@ -32,8 +31,15 @@ func main() {
 
 	journal := make([]DiaryEntry, 0)
 
+	username := "iMkh"
+	category := "all"
+	page := 1
+
+	fmt.Println(category)
+
 	c.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
+			// TODO: add handling of sub-item (2 entries at the same date)
 			if date := e.Attr("data-sc-datedone"); date != "" {
 				score := e.ChildText("div.epri-score")
 				if score == "" { // TODO: check "done" state (no score)
@@ -49,13 +55,19 @@ func main() {
 				})
 			}
 		})
+		e.Response.Ctx.Put("lastVisitedPage", page)
 	})
 
 	c.OnScraped(func(r *colly.Response) {
-		x, _ := prettyjson.Marshal(journal)
-		fmt.Println(string(x))
-		fmt.Println("Finished", r.Request.URL)
+		if r.Ctx.GetAny("lastVisitedPage") == page {
+			page++
+			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/all/all/page-%d.ajax", username, category, page)
+			r.Request.Visit(nextPageURL)
+		} else {
+			fmt.Println(len(journal))
+		}
 	})
 
-	c.Visit("https://www.senscritique.com/iMkh/journal")
+	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/all/all/page-%d.ajax", username, category, page)
+	c.Visit(url)
 }
