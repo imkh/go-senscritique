@@ -1,13 +1,12 @@
-package main
+package scscraper
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/gocolly/colly"
 )
 
-// DiaryEntry represent an entry in a SensCritique user's diary.
+// DiaryEntry represent an entry in a SensCritique user's diary
 type DiaryEntry struct {
 	FrenchTitle      *string `json:"french_title"`
 	TitleDate        *string `json:"title_date"`
@@ -17,18 +16,8 @@ type DiaryEntry struct {
 	Score            *string `json:"score"`
 }
 
-func trimString(value string) *string {
-	if value == "" {
-		return nil
-	}
-	space := regexp.MustCompile(`\s+`)
-	s := space.ReplaceAllString(value, " ")
-	return &s
-}
-
-func main() {
-	c := colly.NewCollector()
-
+// ScrapeDiary scrape a given user diary page
+func (scs *SensCritiqueScraper) ScrapeDiary() ([]DiaryEntry, error) {
 	diary := make([]DiaryEntry, 0)
 
 	username := "iMkh"
@@ -37,7 +26,7 @@ func main() {
 
 	fmt.Println(category)
 
-	c.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
+	scs.c.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
 			// TODO: add handling of sub-item (2 entries at the same date)
 			if date := e.Attr("data-sc-datedone"); date != "" {
@@ -58,7 +47,7 @@ func main() {
 		e.Response.Ctx.Put("lastVisitedPage", page)
 	})
 
-	c.OnScraped(func(r *colly.Response) {
+	scs.c.OnScraped(func(r *colly.Response) {
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
 			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/all/all/page-%d.ajax", username, category, page)
@@ -69,5 +58,7 @@ func main() {
 	})
 
 	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/all/all/page-%d.ajax", username, category, page)
-	c.Visit(url)
+	scs.c.Visit(url)
+
+	return diary, nil
 }
