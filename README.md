@@ -1,3 +1,3 @@
-# senscritique-scraper
+# scscraper
 
 A SensCritique web scraper.
