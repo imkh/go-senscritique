@@ -31,6 +31,9 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 	if err := validator.ValidateStruct(opts); err != nil {
 		return nil, err
 	}
+	if opts.Year == 0 && opts.Month != "all" {
+		return nil, fmt.Errorf("A month cannot be specified without a year")
+	}
 
 	diary := make([]DiaryEntry, 0)
 
