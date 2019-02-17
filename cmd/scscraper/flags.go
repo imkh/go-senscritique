@@ -9,9 +9,8 @@ var (
 			Value: "all",
 			Usage: "Limit the results to a specific category",
 		},
-		cli.StringFlag{
+		cli.IntFlag{
 			Name:  "year, y",
-			Value: "all",
 			Usage: "Limit the results to a specific year",
 		},
 		cli.StringFlag{

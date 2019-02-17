@@ -2,8 +2,11 @@ package scscraper
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gocolly/colly"
+
+	"github.com/imkh/scscraper/internal/validator"
 )
 
 // DiaryEntry represent an entry in a SensCritique user's diary
@@ -18,16 +21,22 @@ type DiaryEntry struct {
 
 // ScrapeDiaryOptions specifies the optional parameters to scrape a diary
 type ScrapeDiaryOptions struct {
-	Category string
-	Year     string
-	Month    string
+	Category string `validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
+	Year     int    `validate:"min=0"`
+	Month    string `validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
 
 // ScrapeDiary scrape a given user diary page
 func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]DiaryEntry, error) {
+	if err := validator.ValidateStruct(opts); err != nil {
+		return nil, err
+	}
+
 	diary := make([]DiaryEntry, 0)
 
+	// Set default values
 	page := 1
+	yearStr := strconv.Itoa(opts.Year)
 
 	fmt.Println(opts.Category)
 
@@ -55,14 +64,14 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 	scs.c.OnScraped(func(r *colly.Response) {
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
-			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, opts.Year, opts.Month, page)
+			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
 			r.Request.Visit(nextPageURL)
 		} else {
 			fmt.Println(len(diary))
 		}
 	})
 
-	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, opts.Year, opts.Month, page)
+	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
 	scs.c.Visit(url)
 
 	return diary, nil

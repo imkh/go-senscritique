@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/urfave/cli"
@@ -23,18 +22,19 @@ func main() {
 			Flags:     diaryFlags,
 			Action: func(c *cli.Context) error {
 				scs := scscraper.New()
-				scs.ScrapeDiary(c.Args().First(), &scscraper.ScrapeDiaryOptions{
+				_, err := scs.ScrapeDiary(c.Args().First(), &scscraper.ScrapeDiaryOptions{
 					Category: c.String("category"),
-					Year:     c.String("year"),
+					Year:     c.Int("year"),
 					Month:    c.String("month"),
 				})
-				return nil
+				return err
 			},
 		},
 	}
 
 	err := app.Run(os.Args)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Fprintf(os.Stderr, "%v\n", err)
+		os.Exit(1)
 	}
 }
