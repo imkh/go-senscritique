@@ -21,9 +21,9 @@ type DiaryEntry struct {
 
 // ScrapeDiaryOptions specifies the optional parameters to scrape a diary
 type ScrapeDiaryOptions struct {
-	Category string `validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
+	Category string `default:"all" validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
 	Year     int    `validate:"min=0"`
-	Month    string `validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
+	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
 
 // ScrapeDiary scrape a given user diary page
@@ -37,6 +37,9 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 	// Set default values
 	page := 1
 	yearStr := strconv.Itoa(opts.Year)
+	if opts.Year == 0 {
+		yearStr = "all"
+	}
 
 	fmt.Println(opts.Category)
 

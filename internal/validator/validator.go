@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/creasty/defaults"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"gopkg.in/go-playground/validator.v9"
@@ -12,6 +13,10 @@ import (
 
 // ValidateStruct make sure the struct is valid and translate errors to human-readable messages
 func ValidateStruct(s interface{}) error {
+	if err := defaults.Set(s); err != nil {
+		return err
+	}
+
 	var uni *ut.UniversalTranslator
 	var validate *validator.Validate
 

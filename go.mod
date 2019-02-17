@@ -5,6 +5,7 @@ require (
 	github.com/antchfx/htmlquery v1.0.0 // indirect
 	github.com/antchfx/xmlquery v1.0.0 // indirect
 	github.com/antchfx/xpath v0.0.0-20190129040759-c8489ed3251e // indirect
+	github.com/creasty/defaults v1.3.0
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/go-playground/locales v0.12.1
 	github.com/go-playground/universal-translator v0.16.0
