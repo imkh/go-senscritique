@@ -6,12 +6,12 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/imkh/scscraper/pkg/scscraper"
+	"github.com/imkh/go-senscritique/pkg/senscritique"
 )
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "scscraper"
+	app.Name = "senscritique"
 	app.Usage = "A SensCritique web scraper"
 
 	app.Commands = []cli.Command{
@@ -21,8 +21,8 @@ func main() {
 			UsageText: fmt.Sprintf("%s diary [command options] [username]", app.Name),
 			Flags:     diaryFlags,
 			Action: func(c *cli.Context) error {
-				scs := scscraper.New()
-				_, err := scs.ScrapeDiary(c.Args().First(), &scscraper.ScrapeDiaryOptions{
+				sc := senscritique.NewScraper()
+				_, err := sc.ScrapeDiary(c.Args().First(), &senscritique.ScrapeDiaryOptions{
 					Category: c.String("category"),
 					Year:     c.Int("year"),
 					Month:    c.String("month"),

@@ -1,4 +1,4 @@
-module github.com/imkh/scscraper
+module github.com/imkh/go-senscritique
 
 require (
 	github.com/PuerkitoBio/goquery v1.5.0 // indirect

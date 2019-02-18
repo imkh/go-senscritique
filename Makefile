@@ -1,4 +1,4 @@
-BINARY	=	scscraper
+BINARY	=	senscritique
 
 all:	help
 

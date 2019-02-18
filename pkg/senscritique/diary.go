@@ -1,4 +1,4 @@
-package scscraper
+package senscritique
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/gocolly/colly"
 
-	"github.com/imkh/scscraper/internal/validator"
+	"github.com/imkh/go-senscritique/internal/validator"
 )
 
 // DiaryEntry represent an entry in a SensCritique user's diary
@@ -27,7 +27,7 @@ type ScrapeDiaryOptions struct {
 }
 
 // ScrapeDiary scrape a given user diary page
-func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]DiaryEntry, error) {
+func (s *Scraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]DiaryEntry, error) {
 	if err := validator.ValidateStruct(opts); err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 
 	fmt.Println(opts.Category)
 
-	scs.c.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
+	s.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
 			// TODO: add handling of sub-item (2 entries at the same date)
 			if date := e.Attr("data-sc-datedone"); date != "" {
@@ -67,7 +67,7 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 		e.Response.Ctx.Put("lastVisitedPage", page)
 	})
 
-	scs.c.OnScraped(func(r *colly.Response) {
+	s.collector.OnScraped(func(r *colly.Response) {
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
 			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
@@ -78,7 +78,7 @@ func (scs *SensCritiqueScraper) ScrapeDiary(username string, opts *ScrapeDiaryOp
 	})
 
 	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
-	scs.c.Visit(url)
+	s.collector.Visit(url)
 
 	return diary, nil
 }
