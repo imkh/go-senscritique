@@ -9,7 +9,12 @@ import (
 	"github.com/imkh/go-senscritique/internal/validator"
 )
 
-// DiaryEntry represent an entry in a SensCritique user's diary
+// DiaryService provides access to the diary scraping functions.
+//
+// Scraped page: https://www.senscritique.com/:username/journal/all/all/all
+type DiaryService service
+
+// DiaryEntry represent an entry in a SensCritique user's diary.
 type DiaryEntry struct {
 	FrenchTitle      *string `json:"french_title"`
 	TitleDate        *string `json:"title_date"`
@@ -19,15 +24,15 @@ type DiaryEntry struct {
 	Score            *string `json:"score"`
 }
 
-// ScrapeDiaryOptions specifies the optional parameters to scrape a diary
-type ScrapeDiaryOptions struct {
+// GetDiaryOptions specifies the optional parameters to scrape a diary.
+type GetDiaryOptions struct {
 	Category string `default:"all" validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
 	Year     int    `validate:"min=0"`
 	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
 
-// ScrapeDiary scrape a given user diary page
-func (s *Scraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]DiaryEntry, error) {
+// GetDiary scrape a given user diary page.
+func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]DiaryEntry, error) {
 	if err := validator.ValidateStruct(opts); err != nil {
 		return nil, err
 	}
@@ -46,7 +51,7 @@ func (s *Scraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]Diar
 
 	fmt.Println(opts.Category)
 
-	s.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
+	s.scraper.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
 			// TODO: add handling of sub-item (2 entries at the same date)
 			if date := e.Attr("data-sc-datedone"); date != "" {
@@ -67,18 +72,18 @@ func (s *Scraper) ScrapeDiary(username string, opts *ScrapeDiaryOptions) ([]Diar
 		e.Response.Ctx.Put("lastVisitedPage", page)
 	})
 
-	s.collector.OnScraped(func(r *colly.Response) {
+	s.scraper.collector.OnScraped(func(r *colly.Response) {
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
-			nextPageURL := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
+			nextPageURL := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Category, yearStr, opts.Month, page)
 			r.Request.Visit(nextPageURL)
 		} else {
 			fmt.Println(len(diary))
 		}
 	})
 
-	url := fmt.Sprintf("https://www.senscritique.com/%s/journal/%s/%s/%s/page-%d.ajax", username, opts.Category, yearStr, opts.Month, page)
-	s.collector.Visit(url)
+	url := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Category, yearStr, opts.Month, page)
+	s.scraper.collector.Visit(url)
 
 	return diary, nil
 }

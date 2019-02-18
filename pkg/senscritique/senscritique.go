@@ -8,23 +8,42 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://www.senscritique.com/"
+	defaultBaseURL = "https://www.senscritique.com"
 )
 
-// A Scraper represents a scraper for the SensCritique website
+// A Scraper represents a scraper for the SensCritique website.
 type Scraper struct {
-	BaseURL *url.URL
+	// SensCritique base URL.
+	baseURL *url.URL
 
+	// Colly's main entity: Collector, which provides
+	// the actual scraper instance for a scraping job.
 	collector *colly.Collector
+
+	// Reuse a single struct instead of allocating one for each service on the heap.
+	common service
+
+	// Services used for talking to different parts of the SensCritique scraper.
+	Diary *DiaryService
 }
 
-// NewScraper creates a new Scraper instance with default configuration
+type service struct {
+	scraper *Scraper
+}
+
+// NewScraper creates a new Scraper instance with default configuration.
 func NewScraper() *Scraper {
 	baseURL, _ := url.Parse(defaultBaseURL)
-	return &Scraper{
-		BaseURL:   baseURL,
+
+	s := &Scraper{
+		baseURL:   baseURL,
 		collector: colly.NewCollector(),
 	}
+
+	s.common.scraper = s
+	s.Diary = (*DiaryService)(&s.common)
+
+	return s
 }
 
 func trimString(value string) *string {

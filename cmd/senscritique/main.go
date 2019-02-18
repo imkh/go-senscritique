@@ -22,7 +22,7 @@ func main() {
 			Flags:     diaryFlags,
 			Action: func(c *cli.Context) error {
 				sc := senscritique.NewScraper()
-				_, err := sc.ScrapeDiary(c.Args().First(), &senscritique.ScrapeDiaryOptions{
+				_, err := sc.Diary.GetDiary(c.Args().First(), &senscritique.GetDiaryOptions{
 					Category: c.String("category"),
 					Year:     c.Int("year"),
 					Month:    c.String("month"),
