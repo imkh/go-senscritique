@@ -1,6 +1,9 @@
 # Binaries
 /senscritique
 
+# Vendor
+/vendor
+
 ##########################
 # Go .gitignore template #
 ##########################
