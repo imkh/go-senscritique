@@ -6,7 +6,7 @@ import (
 
 	"github.com/urfave/cli"
 
-	"github.com/imkh/go-senscritique/pkg/senscritique"
+	"github.com/imkh/go-senscritique"
 )
 
 func main() {

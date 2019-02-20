@@ -1,30 +1,40 @@
-BINARY	=	senscritique
+GO = GO111MODULE=on go
 
-all:	help
+BINARY = senscritique
+PACKAGE = ./cmd/$(BINARY)
 
-## install: Install binary in $GOBIN. Make sure it's set in your $PATH to run it from any directory.
-install:
-		go install -v ./cmd/...
+.PHONY: all
+all: help ## help
 
-## build: Build binary in local directory.
-build:
-		go build -o $(BINARY) -v ./cmd/$(BINARY)/...
+.PHONY: run
+run: ## Run the program
+	$(GO) run $(PACKAGE)
 
-## test: Runs `go test -v ./...`.
-test:
-		go test -v ./...
+.PHONY: install
+install: ## Install binary in $GOBIN (make sure it's set in your $PATH)
+	$(GO) install -v $(PACKAGE)
 
-## clean: Runs `go clean` and clean build files.
-clean:
-		go clean
-		rm -f $(BINARY)
+.PHONY: build
+build: ## Build binary in this directory
+	$(GO) build -v -o $(BINARY) $(PACKAGE)
 
-## deps: Runs `GO111MODULE=on go mod vendor`.
-deps:
-		GO111MODULE=on go mod vendor
+.PHONY: dep
+dep: ## Get the dependencies
+	$(GO) get -d -v ./...
 
-help:	Makefile
-		@echo "Usage:"
-		@sed -n 's/^##//p' $< | column -t -s ':' |  sed -e 's/^/ /'
+.PHONY: test
+test: ## Run unit tests
+	$(GO) test -v ./...
 
-.PHONY:	all install build test clean deps help
+.PHONY: lint
+lint: ## Lint the files (requires golangci-lint installed)
+	golangci-lint run
+
+.PHONY: clean
+clean: ## Remove previous build files
+	rm -f $(BINARY)
+
+.PHONY: help
+help: ## Display this help screen
+	@echo "Usage:"
+	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf " \033[36m%-15s\033[0m %s\n", $$1, $$2}'
