@@ -33,6 +33,9 @@ type GetDiaryOptions struct {
 
 // GetDiary scrape a given user diary page.
 func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]DiaryEntry, error) {
+	if opts == nil {
+		opts = new(GetDiaryOptions)
+	}
 	if err := validator.ValidateStruct(opts); err != nil {
 		return nil, err
 	}
