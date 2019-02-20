@@ -46,11 +46,11 @@ func NewScraper() *Scraper {
 	return s
 }
 
-func trimString(value string) *string {
-	if value == "" {
+func trimString(s string) *string {
+	if s == "" {
 		return nil
 	}
 	space := regexp.MustCompile(`\s+`)
-	s := space.ReplaceAllString(value, " ")
-	return &s
+	ts := space.ReplaceAllString(s, " ")
+	return &ts
 }
