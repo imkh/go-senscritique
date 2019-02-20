@@ -5,9 +5,9 @@ import "github.com/urfave/cli"
 var (
 	diaryFlags = []cli.Flag{
 		cli.StringFlag{
-			Name:  "category, c",
+			Name:  "universe, u",
 			Value: "all",
-			Usage: "Limit the results to a specific category",
+			Usage: "Limit the results to a specific universe",
 		},
 		cli.IntFlag{
 			Name:  "year, y",

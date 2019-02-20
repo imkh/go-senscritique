@@ -11,7 +11,7 @@ import (
 
 // DiaryService provides access to the diary scraping functions.
 //
-// Scraped page: https://www.senscritique.com/:username/journal/all/all/all
+// Scraped page: https://www.senscritique.com/:username/journal/:universe/:year/:month
 type DiaryService service
 
 // DiaryEntry represent an entry in a SensCritique user's diary.
@@ -26,7 +26,7 @@ type DiaryEntry struct {
 
 // GetDiaryOptions specifies the optional parameters to scrape a diary.
 type GetDiaryOptions struct {
-	Category string `default:"all" validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
+	Universe string `default:"all" validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
 	Year     int    `validate:"min=0"`
 	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
@@ -49,7 +49,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]Diary
 		yearStr = "all"
 	}
 
-	fmt.Println(opts.Category)
+	fmt.Println(opts.Universe)
 
 	s.scraper.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
@@ -75,14 +75,14 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]Diary
 	s.scraper.collector.OnScraped(func(r *colly.Response) {
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
-			nextPageURL := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Category, yearStr, opts.Month, page)
+			nextPageURL := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Universe, yearStr, opts.Month, page)
 			r.Request.Visit(nextPageURL)
 		} else {
 			fmt.Println(len(diary))
 		}
 	})
 
-	url := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Category, yearStr, opts.Month, page)
+	url := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Universe, yearStr, opts.Month, page)
 	s.scraper.collector.Visit(url)
 
 	return diary, nil
