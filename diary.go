@@ -14,7 +14,7 @@ import (
 // Scraped page: https://www.senscritique.com/:username/journal/:universe/:year/:month
 type DiaryService service
 
-// DiaryEntry represent an entry in a SensCritique user's diary.
+// DiaryEntry represents an entry in a SensCritique user's diary.
 type DiaryEntry struct {
 	FrenchTitle      *string `json:"french_title"`
 	TitleDate        *string `json:"title_date"`
@@ -31,7 +31,7 @@ type GetDiaryOptions struct {
 	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
 
-// GetDiary scrape a given user diary page.
+// GetDiary scrapes a given user diary page.
 func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]DiaryEntry, error) {
 	if opts == nil {
 		opts = new(GetDiaryOptions)

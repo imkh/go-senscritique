@@ -11,8 +11,7 @@ import (
 	en_translations "gopkg.in/go-playground/validator.v9/translations/en"
 )
 
-// ValidateStruct make sure the struct is valid
-// and translate errors to human-readable messages.
+// ValidateStruct make sure the struct is valid and translate errors to human-readable messages.
 func ValidateStruct(s interface{}) error {
 	if err := defaults.Set(s); err != nil {
 		return err
