@@ -14,14 +14,19 @@ import (
 // Scraped page: https://www.senscritique.com/:username/journal/:universe/:year/:month
 type DiaryService service
 
+// DiaryProduct represents a product in a diary entry.
+type DiaryProduct struct {
+	FrenchTitle   *string `json:"french_title"`
+	ReleaseDate   *string `json:"release_date"`
+	OriginalTitle *string `json:"original_title"`
+	Description   *string `json:"title_description"`
+}
+
 // DiaryEntry represents an entry in a SensCritique user's diary.
 type DiaryEntry struct {
-	FrenchTitle      *string `json:"french_title"`
-	TitleDate        *string `json:"title_date"`
-	OriginalTitle    *string `json:"original_title"`
-	TitleDescription *string `json:"title_description"`
-	Date             *string `json:"date"`
-	Score            *string `json:"score"`
+	Product *DiaryProduct `json:"product"`
+	Date    *string       `json:"date"`
+	Score   *string       `json:"score"`
 }
 
 // GetDiaryOptions specifies the optional parameters to scrape a diary.
@@ -63,12 +68,14 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]Diary
 					score = "✓" // e.DOM.Find("span.eins-done")
 				}
 				diary = append(diary, DiaryEntry{
-					FrenchTitle:      trimString(e.ChildText("[id^=product-title]")),
-					TitleDate:        trimString(e.ChildText("span.elco-date")),
-					OriginalTitle:    trimString(e.ChildText("p.elco-original-title")),
-					TitleDescription: trimString(e.ChildText("p.elco-baseline")),
-					Date:             trimString(date),
-					Score:            trimString(score),
+					Product: &DiaryProduct{
+						FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
+						ReleaseDate:   trimString(e.ChildText("span.elco-date")),
+						OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
+						Description:   trimString(e.ChildText("p.elco-baseline")),
+					},
+					Date:  trimString(date),
+					Score: trimString(score),
 				})
 			}
 		})
