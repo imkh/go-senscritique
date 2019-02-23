@@ -3,6 +3,7 @@ package senscritique
 import (
 	"net/url"
 	"regexp"
+	"strings"
 
 	"github.com/gocolly/colly"
 )
@@ -44,6 +45,22 @@ func NewScraper() *Scraper {
 	s.Diary = (*DiaryService)(&s.common)
 
 	return s
+}
+
+// SetBaseURL sets the base URL to a custom endpoint.
+func (s *Scraper) SetBaseURL(urlStr string) error {
+	if strings.HasSuffix(urlStr, "/") {
+		urlStr = strings.TrimSuffix(urlStr, "/")
+	}
+
+	baseURL, err := url.Parse(urlStr)
+	if err != nil {
+		return err
+	}
+
+	s.baseURL = baseURL
+
+	return nil
 }
 
 func trimString(s string) string {
