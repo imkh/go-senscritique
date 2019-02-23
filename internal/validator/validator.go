@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/creasty/defaults"
@@ -13,6 +14,11 @@ import (
 
 // ValidateStruct make sure the struct is valid and translate errors to human-readable messages.
 func ValidateStruct(s interface{}) error {
+	// Check if the struct is nil
+	if reflect.ValueOf(s).IsNil() {
+		return fmt.Errorf("Validation Error: %s is nil", reflect.TypeOf(s).String())
+	}
+	// Set default values to the struct if specified with the "default" tag
 	if err := defaults.Set(s); err != nil {
 		return err
 	}
