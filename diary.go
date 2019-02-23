@@ -16,6 +16,7 @@ type DiaryService service
 
 // DiaryProduct represents a product in a diary entry.
 type DiaryProduct struct {
+	ID            *string `json:"id"`
 	FrenchTitle   *string `json:"french_title"`
 	ReleaseDate   *string `json:"release_date"`
 	OriginalTitle *string `json:"original_title"`
@@ -69,6 +70,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]Diary
 				}
 				diary = append(diary, DiaryEntry{
 					Product: &DiaryProduct{
+						ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
 						FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
 						ReleaseDate:   trimString(e.ChildText("span.elco-date")),
 						OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
