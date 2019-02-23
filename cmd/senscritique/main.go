@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -22,11 +23,13 @@ func main() {
 			Flags:     diaryFlags,
 			Action: func(c *cli.Context) error {
 				sc := senscritique.NewScraper()
-				_, err := sc.Diary.GetDiary(c.Args().First(), &senscritique.GetDiaryOptions{
+				diary, err := sc.Diary.GetDiary(c.Args().First(), &senscritique.GetDiaryOptions{
 					Universe: c.String("universe"),
 					Year:     c.Int("year"),
 					Month:    c.String("month"),
 				})
+				output, _ := json.Marshal(diary)
+				fmt.Println(string(output))
 				return err
 			},
 		},
