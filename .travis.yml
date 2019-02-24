@@ -1,0 +1,36 @@
+language: go
+
+cache:
+  directories:
+    - $HOME/.cache/go-build
+    - $HOME/gopath/pkg/mod
+
+go:
+  - 1.10.x
+  - 1.11.x
+
+matrix:
+  allow_failures:
+    - go: master
+  fast_finish: true
+
+stages:
+  - lint
+  - test
+
+stage: test
+install:
+  - make dep
+script:
+  - make test
+
+jobs:
+  include:
+    - stage: lint
+      go: 1.11.x
+      before_install:
+        - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.15.0
+      install:
+        - make dep
+      script:
+        - make lint

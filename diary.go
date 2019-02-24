@@ -86,12 +86,12 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 		if r.Ctx.GetAny("lastVisitedPage") == page {
 			page++
 			nextPageURL := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Universe, yearStr, opts.Month, page)
-			r.Request.Visit(nextPageURL)
+			_ = r.Request.Visit(nextPageURL)
 		}
 	})
 
 	url := fmt.Sprintf("%s/%s/journal/%s/%s/%s/page-%d.ajax", s.scraper.baseURL, username, opts.Universe, yearStr, opts.Month, page)
-	s.scraper.collector.Visit(url)
+	_ = s.scraper.collector.Visit(url)
 
 	return diary, nil
 }

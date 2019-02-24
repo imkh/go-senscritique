@@ -32,7 +32,9 @@ func ValidateStruct(s interface{}) error {
 	trans, _ := uni.GetTranslator("en")
 
 	validate = validator.New()
-	en_translations.RegisterDefaultTranslations(validate, trans)
+	if err := en_translations.RegisterDefaultTranslations(validate, trans); err != nil {
+		return err
+	}
 
 	// Validate Config struct
 	err := validate.Struct(s)

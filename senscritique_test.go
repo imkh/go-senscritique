@@ -18,7 +18,7 @@ func setup() (*http.ServeMux, *httptest.Server, *Scraper) {
 
 	// scraper is the SensCritique scraper being tested.
 	scraper := NewScraper()
-	scraper.SetBaseURL(server.URL)
+	_ = scraper.SetBaseURL(server.URL)
 
 	return mux, server, scraper
 }
