@@ -28,7 +28,7 @@ test: ## Run unit tests
 
 .PHONY: lint
 lint: ## Lint the files (requires golangci-lint installed)
-	golangci-lint run
+	GO111MODULE=on golangci-lint run
 
 .PHONY: clean
 clean: ## Remove previous build files
