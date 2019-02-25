@@ -3,6 +3,7 @@ package senscritique
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/gocolly/colly"
 
@@ -70,7 +71,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 					Product: &DiaryProduct{
 						ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
 						FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
-						ReleaseYear:   trimString(e.ChildText("span.elco-date")), // TODO: Trim parenthesis: (2018) -> 2018
+						ReleaseYear:   trimString(strings.Trim(e.ChildText("span.elco-date"), "()")),
 						OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
 						Description:   trimString(e.ChildText("p.elco-baseline")),
 					},

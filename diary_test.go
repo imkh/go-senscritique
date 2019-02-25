@@ -37,7 +37,7 @@ func TestGetDiary(t *testing.T) {
 			Product: &DiaryProduct{
 				ID:            "31252340",
 				FrenchTitle:   "Super Smash Bros. Ultimate",
-				ReleaseYear:   "(2018)",
+				ReleaseYear:   "2018",
 				OriginalTitle: "Dairantō Sumasshu Burazāzu Supesharu",
 				Description:   "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
 			},
