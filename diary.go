@@ -61,22 +61,23 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 
 	s.scraper.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
-			// TODO: add handling of sub-item (2 entries at the same date)
 			if date := e.Attr("data-sc-datedone"); date != "" {
-				score := e.ChildText("div.epri-score")
-				if score == "" { // TODO: check "done" state (no score)
-					score = "✓" // e.DOM.Find("span.eins-done")
-				}
-				diary = append(diary, &DiaryEntry{
-					Product: &DiaryProduct{
-						ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
-						FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
-						ReleaseYear:   trimString(strings.Trim(e.ChildText("span.elco-date"), "()")),
-						OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
-						Description:   trimString(e.ChildText("p.elco-baseline")),
-					},
-					Date:  trimString(date),
-					Score: trimString(score),
+				e.ForEach("div[data-rel='diary-sub-item']", func(i int, e *colly.HTMLElement) {
+					score := e.ChildText("div.epri-score")
+					if score == "" { // TODO: check "done" state (no score)
+						score = "✓" // e.DOM.Find("span.eins-done")
+					}
+					diary = append(diary, &DiaryEntry{
+						Product: &DiaryProduct{
+							ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
+							FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
+							ReleaseYear:   trimString(strings.Trim(e.ChildText("span.elco-date"), "()")),
+							OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
+							Description:   trimString(e.ChildText("p.elco-baseline")),
+						},
+						Date:  trimString(date),
+						Score: trimString(score),
+					})
 				})
 			}
 		})
