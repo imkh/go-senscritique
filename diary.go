@@ -28,7 +28,7 @@ type DiaryProduct struct {
 type DiaryEntry struct {
 	Product *DiaryProduct `json:"product"`
 	Date    string        `json:"date"`
-	Rating  string        `json:"rating"`
+	Rating  *int          `json:"rating"`
 }
 
 // GetDiaryOptions specifies the optional parameters to scrape a diary.
@@ -36,6 +36,15 @@ type GetDiaryOptions struct {
 	Universe string `default:"all" validate:"oneof=all films series episodes jeuxvideo livres bd albums morceaux"`
 	Year     int    `validate:"min=0"`
 	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
+}
+
+func (s *DiaryService) parseRating(e *colly.HTMLElement) *int {
+	ratingStr := e.ChildText("div.eldi-collection-rating")
+	if ratingStr == "" {
+		return nil
+	}
+	rating, _ := strconv.Atoi(trimString(ratingStr))
+	return &rating
 }
 
 // GetDiary scrapes a given user diary page.
@@ -63,10 +72,6 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
 			if date := e.Attr("data-sc-datedone"); date != "" {
 				e.ForEach("div[data-rel='diary-sub-item']", func(i int, e *colly.HTMLElement) {
-					rating := e.ChildText("div.eldi-collection-rating")
-					if rating == "" { // TODO: check "done" state (no rating)
-						rating = "✓" // e.DOM.Find("span.eins-done")
-					}
 					diary = append(diary, &DiaryEntry{
 						Product: &DiaryProduct{
 							ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
@@ -76,7 +81,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 							Description:   trimString(e.ChildText("p.elco-baseline")),
 						},
 						Date:   trimString(date),
-						Rating: trimString(rating),
+						Rating: s.parseRating(e),
 					})
 				})
 			}
@@ -96,4 +101,12 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 	_ = s.scraper.collector.Visit(url)
 
 	return diary, nil
+}
+
+// GetRating returns the Rating field if it's non-nil, zero value otherwise.
+func (d *DiaryEntry) GetRating() int {
+	if d == nil || d.Rating == nil {
+		return 0
+	}
+	return *d.Rating
 }

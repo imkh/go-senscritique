@@ -40,7 +40,7 @@ func TestGetDiary(t *testing.T) {
 				Description:   "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
 			},
 			Date:   "2018-12-25",
-			Rating: "9",
+			Rating: Int(9),
 		},
 		{
 			Product: &DiaryProduct{
@@ -51,7 +51,7 @@ func TestGetDiary(t *testing.T) {
 				Description:   "Long-métrage d'animation de Makoto Shinkai",
 			},
 			Date:   "2018-04-30",
-			Rating: "8",
+			Rating: Int(8),
 		},
 		{
 			Product: &DiaryProduct{
@@ -62,7 +62,7 @@ func TestGetDiary(t *testing.T) {
 				Description:   "Jeu vidéo de Nintendo EPD, Monolith Software et Nintendo",
 			},
 			Date:   "2018-04-30",
-			Rating: "10",
+			Rating: Int(10),
 		},
 	}
 	if !reflect.DeepEqual(want, diary) {

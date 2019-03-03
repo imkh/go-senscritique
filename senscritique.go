@@ -68,3 +68,12 @@ func trimString(s string) string {
 	ts := space.ReplaceAllString(s, " ")
 	return ts
 }
+
+// Bool is a helper method to return a pointer to a provided bool value.
+func Bool(v bool) *bool { return &v }
+
+// Int is a helper method to return a pointer to a provided int value.
+func Int(v int) *int { return &v }
+
+// String is a helper method to return a pointer to a provided string value.
+func String(v string) *string { return &v }
