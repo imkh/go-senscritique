@@ -102,3 +102,11 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 
 	return diary, nil
 }
+
+// GetRating returns the Rating field if it's non-nil, zero value otherwise.
+func (d *DiaryEntry) GetRating() int {
+	if d == nil || d.Rating == nil {
+		return 0
+	}
+	return *d.Rating
+}
