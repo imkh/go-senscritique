@@ -39,8 +39,8 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Dairantō Sumasshu Burazāzu Supesharu",
 				Description:   "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
 			},
-			Date:  "2018-12-25",
-			Score: "9",
+			Date:   "2018-12-25",
+			Rating: "9",
 		},
 		{
 			Product: &DiaryProduct{
@@ -50,8 +50,8 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Kimi no Na wa.",
 				Description:   "Long-métrage d'animation de Makoto Shinkai",
 			},
-			Date:  "2018-04-30",
-			Score: "8",
+			Date:   "2018-04-30",
+			Rating: "8",
 		},
 		{
 			Product: &DiaryProduct{
@@ -61,8 +61,8 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Zeruda no densetsu: Buresu obu za wairudo",
 				Description:   "Jeu vidéo de Nintendo EPD, Monolith Software et Nintendo",
 			},
-			Date:  "2018-04-30",
-			Score: "10",
+			Date:   "2018-04-30",
+			Rating: "10",
 		},
 	}
 	if !reflect.DeepEqual(want, diary) {
