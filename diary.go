@@ -28,7 +28,7 @@ type DiaryProduct struct {
 type DiaryEntry struct {
 	Product *DiaryProduct `json:"product"`
 	Date    string        `json:"date"`
-	Score   string        `json:"score"`
+	Rating  string        `json:"rating"`
 }
 
 // GetDiaryOptions specifies the optional parameters to scrape a diary.
@@ -63,9 +63,9 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
 			if date := e.Attr("data-sc-datedone"); date != "" {
 				e.ForEach("div[data-rel='diary-sub-item']", func(i int, e *colly.HTMLElement) {
-					score := e.ChildText("div.epri-score")
-					if score == "" { // TODO: check "done" state (no score)
-						score = "✓" // e.DOM.Find("span.eins-done")
+					rating := e.ChildText("div.eldi-collection-rating")
+					if rating == "" { // TODO: check "done" state (no rating)
+						rating = "✓" // e.DOM.Find("span.eins-done")
 					}
 					diary = append(diary, &DiaryEntry{
 						Product: &DiaryProduct{
@@ -75,8 +75,8 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 							OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
 							Description:   trimString(e.ChildText("p.elco-baseline")),
 						},
-						Date:  trimString(date),
-						Score: trimString(score),
+						Date:   trimString(date),
+						Rating: trimString(rating),
 					})
 				})
 			}
