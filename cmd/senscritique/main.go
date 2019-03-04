@@ -28,9 +28,12 @@ func main() {
 					Year:     c.Int("year"),
 					Month:    c.String("month"),
 				})
+				if err != nil {
+					return err
+				}
 				output, _ := json.Marshal(diary)
 				fmt.Println(string(output))
-				return err
+				return nil
 			},
 		},
 	}
