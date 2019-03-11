@@ -2,8 +2,10 @@ package senscritique
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 
@@ -27,7 +29,7 @@ type DiaryProduct struct {
 // DiaryEntry represents an entry in a SensCritique user's diary.
 type DiaryEntry struct {
 	Product *DiaryProduct `json:"product"`
-	Date    string        `json:"date"`
+	Date    *time.Time    `json:"date"`
 	Rating  *int          `json:"rating"`
 }
 
@@ -38,13 +40,28 @@ type GetDiaryOptions struct {
 	Month    string `default:"all" validate:"oneof=all janvier fevrier mars avril mai juin juillet aout septembre octobre novembre decembre"`
 }
 
-func (s *DiaryService) parseRating(e *colly.HTMLElement) *int {
+func (s *DiaryService) parseDate(e *colly.HTMLElement) (*time.Time, error) {
+	dateStr := e.Attr("data-sc-datedone")
+	if dateStr == "" {
+		return nil, fmt.Errorf("no date found")
+	}
+	date, err := time.Parse("2006-01-02", trimString(dateStr))
+	if err != nil {
+		return nil, err
+	}
+	return &date, nil
+}
+
+func (s *DiaryService) parseRating(e *colly.HTMLElement) (*int, error) {
 	ratingStr := e.ChildText("div.eldi-collection-rating")
 	if ratingStr == "" {
-		return nil
+		return nil, nil
 	}
-	rating, _ := strconv.Atoi(trimString(ratingStr))
-	return &rating
+	rating, err := strconv.Atoi(trimString(ratingStr))
+	if err != nil {
+		return nil, err
+	}
+	return &rating, nil
 }
 
 // GetDiary scrapes a given user diary page.
@@ -56,7 +73,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 		return nil, err
 	}
 	if opts.Year == 0 && opts.Month != "all" {
-		return nil, fmt.Errorf("A month cannot be specified without a year")
+		return nil, fmt.Errorf("a month cannot be specified without a year")
 	}
 
 	var diary []*DiaryEntry
@@ -69,22 +86,34 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 	}
 
 	s.scraper.collector.OnHTML("div.eldi-collection", func(e *colly.HTMLElement) {
-		e.ForEach("li.eldi-list-item", func(i int, e *colly.HTMLElement) {
-			if date := e.Attr("data-sc-datedone"); date != "" {
-				e.ForEach("div[data-rel='diary-sub-item']", func(i int, e *colly.HTMLElement) {
-					diary = append(diary, &DiaryEntry{
-						Product: &DiaryProduct{
-							ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
-							FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
-							ReleaseYear:   trimString(strings.Trim(e.ChildText("span.elco-date"), "()")),
-							OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
-							Description:   trimString(e.ChildText("p.elco-baseline")),
-						},
-						Date:   trimString(date),
-						Rating: s.parseRating(e),
-					})
-				})
+		e.ForEach("li.eldi-list-item[data-sc-datedone]", func(i int, e *colly.HTMLElement) {
+			// Parse date
+			date, err := s.parseDate(e)
+			if err != nil {
+				log.Println(err)
+				return
 			}
+			// Parse each sub-item
+			e.ForEach("div[data-rel='diary-sub-item']", func(i int, e *colly.HTMLElement) {
+				// Parse rating
+				rating, err := s.parseRating(e)
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				// Parse diary entry
+				diary = append(diary, &DiaryEntry{
+					Product: &DiaryProduct{
+						ID:            trimString(e.ChildAttr("a.eldi-collection-poster", "data-sc-product-id")),
+						FrenchTitle:   trimString(e.ChildText("[id^=product-title]")),
+						ReleaseYear:   trimString(strings.Trim(e.ChildText("span.elco-date"), "()")),
+						OriginalTitle: trimString(e.ChildText("p.elco-original-title")),
+						Description:   trimString(e.ChildText("p.elco-baseline")),
+					},
+					Date:   date,
+					Rating: rating,
+				})
+			})
 		})
 		e.Response.Ctx.Put("lastVisitedPage", page)
 	})
