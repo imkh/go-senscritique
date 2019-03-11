@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestGetDiary(t *testing.T) {
@@ -39,7 +40,7 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Dairantō Sumasshu Burazāzu Supesharu",
 				Description:   "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
 			},
-			Date:   "2018-12-25",
+			Date:   Time(time.Date(2018, 12, 25, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(9),
 		},
 		{
@@ -50,7 +51,7 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Kimi no Na wa.",
 				Description:   "Long-métrage d'animation de Makoto Shinkai",
 			},
-			Date:   "2018-04-30",
+			Date:   Time(time.Date(2018, 04, 30, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(8),
 		},
 		{
@@ -61,7 +62,7 @@ func TestGetDiary(t *testing.T) {
 				OriginalTitle: "Zeruda no densetsu: Buresu obu za wairudo",
 				Description:   "Jeu vidéo de Nintendo EPD, Monolith Software et Nintendo",
 			},
-			Date:   "2018-04-30",
+			Date:   Time(time.Date(2018, 04, 30, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(10),
 		},
 	}

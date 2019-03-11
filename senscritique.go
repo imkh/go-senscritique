@@ -4,6 +4,7 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly"
 )
@@ -77,3 +78,6 @@ func Int(v int) *int { return &v }
 
 // String is a helper method to return a pointer to a provided string value.
 func String(v string) *string { return &v }
+
+// Time is a helper method to return a pointer to a provided time.Time value.
+func Time(v time.Time) *time.Time { return &v }
