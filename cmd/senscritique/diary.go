@@ -9,10 +9,6 @@ import (
 )
 
 func printDiaryBreakdown(diary []*senscritique.DiaryEntry) {
-	printDiaryBreakdownTable(diary)
-}
-
-func printDiaryBreakdownTable(diary []*senscritique.DiaryEntry) {
 	universes := []senscritique.Universe{
 		senscritique.Movies,
 		senscritique.Shows,
