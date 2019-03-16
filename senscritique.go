@@ -64,6 +64,21 @@ func (s *Scraper) SetBaseURL(urlStr string) error {
 	return nil
 }
 
+// Universe represents one of the art forms available on SensCritique.
+type Universe string
+
+// This is the set of available art forms on SensCritique.
+const (
+	Movies   Universe = "films"
+	Shows    Universe = "series"
+	Episodes Universe = "episodes"
+	Games    Universe = "jeuxvideo"
+	Books    Universe = "livres"
+	Comics   Universe = "bd"
+	Albums   Universe = "albums"
+	Tracks   Universe = "morceaux"
+)
+
 func trimString(s string) string {
 	space := regexp.MustCompile(`\s+`)
 	ts := space.ReplaceAllString(s, " ")
