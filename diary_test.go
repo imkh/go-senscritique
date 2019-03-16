@@ -5,9 +5,10 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"reflect"
 	"testing"
 	"time"
+
+	"github.com/go-test/deep"
 )
 
 func TestGetDiary(t *testing.T) {
@@ -35,10 +36,13 @@ func TestGetDiary(t *testing.T) {
 		{
 			Product: &DiaryProduct{
 				ID:            "31252340",
+				Universe:      Games,
 				FrenchTitle:   "Super Smash Bros. Ultimate",
 				ReleaseYear:   "2018",
 				OriginalTitle: "Dairantō Sumasshu Burazāzu Supesharu",
-				Description:   "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
+				Details:       "Jeu vidéo de BANDAI NAMCO Games et Nintendo",
+				WebURL:        fmt.Sprintf("%s%s", scraper.baseURL, "/jeuvideo/Super_Smash_Bros_Ultimate/31252340"),
+				Poster:        "https://media.senscritique.com/media/000017854034/90/Super_Smash_Bros_Ultimate.jpg",
 			},
 			Date:   Time(time.Date(2018, 12, 25, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(9),
@@ -46,10 +50,13 @@ func TestGetDiary(t *testing.T) {
 		{
 			Product: &DiaryProduct{
 				ID:            "21727461",
+				Universe:      Movies,
 				FrenchTitle:   "Your Name.",
 				ReleaseYear:   "2016",
 				OriginalTitle: "Kimi no Na wa.",
-				Description:   "Long-métrage d'animation de Makoto Shinkai",
+				Details:       "Long-métrage d'animation de Makoto Shinkai",
+				WebURL:        fmt.Sprintf("%s%s", scraper.baseURL, "/film/Your_Name/21727461"),
+				Poster:        "https://media.senscritique.com/media/000016585625/90/Your_Name.jpg",
 			},
 			Date:   Time(time.Date(2018, 04, 30, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(8),
@@ -57,16 +64,20 @@ func TestGetDiary(t *testing.T) {
 		{
 			Product: &DiaryProduct{
 				ID:            "10416244",
+				Universe:      Games,
 				FrenchTitle:   "The Legend of Zelda : Breath of the Wild",
 				ReleaseYear:   "2017",
 				OriginalTitle: "Zeruda no densetsu: Buresu obu za wairudo",
-				Description:   "Jeu vidéo de Nintendo EPD, Monolith Software et Nintendo",
+				Details:       "Jeu vidéo de Nintendo EPD, Monolith Software et Nintendo",
+				WebURL:        fmt.Sprintf("%s%s", scraper.baseURL, "/jeuvideo/The_Legend_of_Zelda_Breath_of_the_Wild/10416244"),
+				Poster:        "https://media.senscritique.com/media/000016771881/90/The_Legend_of_Zelda_Breath_of_the_Wild.jpg",
 			},
 			Date:   Time(time.Date(2018, 04, 30, 0, 0, 0, 0, time.UTC)),
 			Rating: Int(10),
 		},
 	}
-	if !reflect.DeepEqual(want, diary) {
-		t.Errorf("Diary.GetDiary returned %+v, want %+v", diary, want)
+
+	if diff := deep.Equal(want, diary); diff != nil {
+		t.Error(diff)
 	}
 }
