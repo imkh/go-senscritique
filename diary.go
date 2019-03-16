@@ -151,10 +151,7 @@ func (s *DiaryService) parseUniverse(url string) Universe {
 }
 
 func (s *DiaryService) isEpisode(e *colly.HTMLElement) bool {
-	if e.ChildAttr("span.eldi-collection-poster", "data-sc-episode-id") == "" {
-		return false
-	}
-	return true
+	return e.ChildAttr("span.eldi-collection-poster", "data-sc-episode-id") != ""
 }
 
 func (s *DiaryService) parseProduct(e *colly.HTMLElement) *DiaryProduct {
