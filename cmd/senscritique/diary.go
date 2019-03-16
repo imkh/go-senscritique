@@ -4,8 +4,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/imkh/go-senscritique"
 	"github.com/olekukonko/tablewriter"
+
+	"github.com/imkh/go-senscritique"
 )
 
 func printDiaryBreakdown(diary []*senscritique.DiaryEntry) {
