@@ -73,7 +73,7 @@ func (s *DiaryService) GetDiary(username string, opts *GetDiaryOptions) ([]*Diar
 				return
 			}
 			// Parse each sub-item
-			e.ForEach("div[data-rel='diary-sub-item']", func(j int, g *colly.HTMLElement) {
+			f.ForEach("div[data-rel='diary-sub-item']", func(j int, g *colly.HTMLElement) {
 				// Parse rating
 				rating, err := s.parseRating(g)
 				if err != nil {
