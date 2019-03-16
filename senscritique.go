@@ -79,6 +79,29 @@ const (
 	Tracks   Universe = "morceaux"
 )
 
+// English returns the english word for a universe.
+func (u Universe) English() string {
+	switch u {
+	case Movies:
+		return "Movies"
+	case Shows:
+		return "TV Shows"
+	case Episodes:
+		return "Episodes"
+	case Games:
+		return "Games"
+	case Books:
+		return "Books"
+	case Comics:
+		return "Comics"
+	case Albums:
+		return "Albums"
+	case Tracks:
+		return "Tracks"
+	}
+	return ""
+}
+
 func trimString(s string) string {
 	space := regexp.MustCompile(`\s+`)
 	ts := space.ReplaceAllString(s, " ")

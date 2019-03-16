@@ -31,8 +31,12 @@ func main() {
 				if err != nil {
 					return err
 				}
-				output, _ := json.Marshal(diary)
-				fmt.Println(string(output))
+				if c.Bool("json") {
+					output, _ := json.Marshal(diary)
+					fmt.Println(string(output))
+				} else {
+					printDiaryBreakdown(diary)
+				}
 				return nil
 			},
 		},

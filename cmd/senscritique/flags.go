@@ -18,5 +18,9 @@ var (
 			Value: "all",
 			Usage: "Limit the results to a specific month",
 		},
+		cli.BoolFlag{
+			Name:  "json",
+			Usage: "Print JSON output",
+		},
 	}
 )
