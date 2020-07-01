@@ -10,7 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-test/deep v1.0.4
 	github.com/gobwas/glob v0.2.3 // indirect
-	github.com/gocolly/colly v1.2.0
+	github.com/gocolly/colly/v2/v2 v2.1.0
 	github.com/kennygrant/sanitize v1.2.4 // indirect
 	github.com/leodido/go-urn v1.1.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.2
