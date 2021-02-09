@@ -8,7 +8,7 @@ require (
 	github.com/creasty/defaults v1.3.0
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
-	github.com/go-test/deep v1.0.4
+	github.com/go-test/deep v1.0.7
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/gocolly/colly v1.2.0
 	github.com/kennygrant/sanitize v1.2.4 // indirect
