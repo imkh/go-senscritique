@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://www.senscritique.com"
+	defaultBaseURL = "https://old.senscritique.com"
 )
 
 // A Scraper represents a scraper for the SensCritique website.
