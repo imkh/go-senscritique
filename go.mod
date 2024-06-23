@@ -6,7 +6,7 @@ require (
 	github.com/creasty/defaults v1.6.0
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
-	github.com/go-test/deep v1.0.8
+	github.com/go-test/deep v1.1.1
 	github.com/gocolly/colly v1.2.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/urfave/cli v1.22.9
