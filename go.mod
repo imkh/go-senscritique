@@ -3,7 +3,7 @@ module github.com/imkh/go-senscritique
 go 1.18
 
 require (
-	github.com/creasty/defaults v1.6.0
+	github.com/creasty/defaults v1.8.0
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0
 	github.com/go-test/deep v1.0.8
